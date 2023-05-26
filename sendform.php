@@ -1,12 +1,12 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST["name"];
-    $tel = $_POST["tel"];
-    $address = $_POST["address"];
-    $to = "Yar.kllak@gmail.com";
-    $subject = "Нове замовлення на підключення";
-    $message = "Ім'я: $name\nТелефон: $tel\nАдреса: $address";
-    $headers = "From: Yar.kllak@gmail.com\r\nReply-To: Yar.kllak@gmail.com";
+    $phone = $_POST["phone"];
+    $email = $_POST["email"];
+    $to = "fetunigor@gmail.com";
+    $subject = "Заявка - Поліглот";
+    $message = "Ім'я: $name\nТелефон: $phone\Емейл: $email";
+    $headers = "From: fetunigor@gmail.com\r\nReply-To: fetunigor@gmail.com";
     mail($to, $subject, $message, $headers);
 }
 ?>

@@ -1,3 +1,27 @@
+<?php 
+include('db.php');
+session_start();
+
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['id']) && isset($_GET['exit'])) {
+  session_unset();
+  session_destroy();
+  header("Location: index.php");
+}
+
+if(isset($_SESSION["id"])) {
+  $menu_link = '<a href="index.php?id='. $_SESSION["id"] .'&exit=1" class="btn btn--size-sm btn--theme-accent">Вийти</a>';
+  $course_link = '<a href="buy.php?id='. $_SESSION["id"] .'" class="btn btn--size-md btn--theme-accent services-card__btn">Замовити</a>';
+  $menu_signup = '';
+  $js_modal = '';
+} else {
+  $course_link = '<a href="" class="btn btn--size-md btn--theme-accent services-card__btn">Спробувати</a>';
+  $menu_link = '<a href="login.php" class="btn btn--size-sm btn--theme-accent">Увійти</a></a>';
+  $menu_signup = '<li class="nav__item"><a href="signup.php" class="nav__link">Зареєструватись</a></li>';
+  $js_modal = 'js-modal-init';
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -5,8 +29,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Polyglot Hub - вивчення іноземних мов</title>
-  <link href="./css/style.css?v=234235734245" type="text/css" rel="stylesheet">
-  <script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+  <link href="css/style.css" type="text/css" rel="stylesheet">
   <script type="text/javascript" src="js/my.js"></script>
 </head>
 <body>
@@ -18,7 +41,7 @@
         <img src="images/icon-close.svg">
       </div>
       <div class="popap__message">Дані успішно отримано ✅Незабаром наш менеджер зв'яжеться з вами для узгодження дати та часу уроку</div>
-      <form action="mail.php" method="POST" class="popap-form">
+      <form action="sendform.php" method="POST" class="popap-form">
         <div class="popap__title">Замовте безкоштовний пробний урок</div>
         <input type="text" name="name" class="form-input" placeholder="Ім'я">
         <input type="number" name="tel" required class="form-input" placeholder="Телефон">
@@ -33,15 +56,28 @@
       <a href="/" class="logo header__logo">Polyglot Hub</a>
       <nav class="nav header__nav">
         <ul class="nav__list">
-          <li class="nav__item">
-            <a href="#intro" class="nav__link">Про нас</a>
-          </li>
-          <li class="nav__item">
-            <a href="#services" class="nav__link">Курси</a>
-          </li>
-          <li class="nav__item">
-            <a href="#step" class="nav__link">Співпраця</a>
-          </li>
+          <?php if(isset($_SESSION["id"])){
+            echo('<li class="nav__item">
+                    <a href="user.php?id='.$_SESSION["id"].'" class="nav__link">Кабінет</a>
+                  </li>
+                  <li class="nav__item">
+                    '.$menu_link .'
+                  </li>');
+          }else{
+            echo('<li class="nav__item">
+                    <a href="#intro" class="nav__link">Про нас</a>
+                  </li>
+                  <li class="nav__item">
+                    <a href="#services" class="nav__link">Курси</a>
+                  </li>
+                  <li class="nav__item">
+                    <a href="#step" class="nav__link">Співпраця</a>
+                  </li>
+                  <li class="nav__item">
+                    '.$menu_link .'
+                  </li>');
+          }
+          ?>
         </ul>
       </nav>
     </div>
@@ -53,7 +89,6 @@
       <div class="intro__content">
         <h1 class="intro__title">Polyglot Hub:<br>Розкрий світ мов!</h1>
         <h2 class="title title-size-5 intro__subtitle">Досліджуйте нові горизонти, оволодівайте мовами та з'єднуйтеся зі світом</h2>
-        <div class="intro__description">Вибирайте один із тарифів (Експлорер/Мовний Візіонер/Поліглот)</div>
         <a href="#" class="js-modal-init btn btn--size-md btn--theme-accent intro__btn">Залишити заявку</a>
       </div>
       <picture class="intro__hero">
@@ -67,48 +102,26 @@
     <div class="container container--size-md services__container">
       <h2 class="section-title step__title">Виберіть пакет індивідуальних занять</h2>
       <div class="services__list">
-        <div class="services__list-col">
-          <article class="services-card">
-            <div class="services-card__inner">
-              <h3 class="title-size-4 services-card__title">Експлорер</h3>
-              <div class="title-size-6 services-card__count">6 занять</div>
-              <ul class="services-card__list">
-                <li>Індивідуальні уроки з викладачем</li>
-                <li>60 хвилин</li>
-              </ul>
-              <div class="title-size-5 services-card__price">292 грн / урок</div>
-              <a href="#" class="js-modal-init btn btn--size-md btn--theme-accent services-card__btn">Спробувати</a>
-            </div>
-          </article>
-        </div>
-        <div class="services__list-col">
-          <article class="services-card">
-            <div class="services-card__inner">
-              <h3 class="title-size-4 services-card__title">Мовний Візіонер</h3>
-              <div class="title-size-5 services-card__count">12 занять</div>
-              <ul class="services-card__list">
-                <li>Індивідуальні уроки з викладачем</li>
-                <li>60 хвилин</li>
-              </ul>
-              <div class="title-size-5 services-card__price">274 грн / урок</div>
-              <a href="#" class="js-modal-init btn btn--size-md btn--theme-accent services-card__btn">Спробувати</a>
-            </div>
-          </article>
-        </div>
-        <div class="services__list-col">
-          <article class="services-card is-special">
-            <div class="services-card__inner">
-              <h3 class="title-size-4 services-card__title">Поліглот</h3>
-              <div class="title-size-5 services-card__count">20 занять</div>
-              <ul class="services-card__list">
-                <li>Індивідуальні уроки з викладачем</li>
-                <li>60 хвилин</li>
-              </ul>
-              <div class="title-size-5 services-card__price">250 грн / урок</div>
-              <a href="#" class="js-modal-init btn btn--size-md btn--theme-accent services-card__btn">Спробувати</a>
-            </div>
-          </article>
-        </div>
+        <?php
+          $courses_query = "SELECT * FROM courses";
+          $courses_result = mysqli_query($conn, $courses_query);
+          while ($courses_row = mysqli_fetch_assoc($courses_result)) {
+            echo('<div class="services__list-col">
+                    <article class="services-card">
+                      <div class="services-card__inner">
+                        <h3 class="title-size-4 services-card__title">'. $courses_row["name"] .'</h3>
+                        <div class="title-size-6 services-card__count">'. $courses_row["lesson_count"] .' занять</div>
+                        <ul class="services-card__list">
+                          <li>'. $courses_row["type"] .'</li>
+                          <li>'. $courses_row["lesson_duration"] .' хвилин</li>
+                        </ul>
+                        <div class="title-size-5 services-card__price">'. $courses_row["cost"] .' грн / урок</div>
+                        <a href="user.php?id='. $_SESSION["id"] .'&buy=true&course_id='.$courses_row["id"].'" class="'.$js_modal.' btn btn--size-md btn--theme-accent services-card__btn">Замовити</a>
+                      </div>
+                    </article>
+                  </div>');
+          }
+        ?>
       </div>
     </div>
   </section>
